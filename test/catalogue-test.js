@@ -49,14 +49,15 @@ describe("Catalogue", () => {
       });
     });
   });
+
   describe("removeProductById", () => {
-    // beforeEach(() => {
-    //   cat.addProduct(p123);
-    //   cat.addProduct(p124);
-    //   cat.addProduct(p125);
-    //   cat.addProduct(p126);
-    //   console.log('before block')
-    // });
+    beforeEach(() => {
+      cat.addProduct(p123);
+      cat.addProduct(p124);
+      cat.addProduct(p125);
+      cat.addProduct(p126);
+      console.log('before block')
+    });
     it("should return the removed product when the id is valid", function () {
       let result = cat.removeProductById("A124");
       expect(result.id).to.equal("A124");
@@ -68,5 +69,29 @@ describe("Catalogue", () => {
       const result = cat.removeProductById("A321");
       expect(result).to.be.undefined;
     });
+  });
+
+  describe("checkReorder", () => {
+    it("should return an empty array when no products need reordering", function () {
+      const result = cat.checkReorders();
+      expect(result.productIds).to.be.empty;
+    });
+    it("should report products that satisfy the reorder criteria", function () {
+      cat.addProduct(new Product("B123", "Product 4", 10, 20, 10.0));
+      cat.addProduct(new Product("B124", "Product 5", 10, 30, 10.0));
+      const result = cat.checkReorders();
+      expect(result.productIds).to.have.lengthOf(2);
+      expect(result.productIds).to.have.members(["B123", "B124"]);
+    });
+    it("should include products just on their reorder level", function () {
+      cat.addProduct(new Product("B125", "Product 6", 10, 10, 10.0));
+      const result = cat.checkReorders();
+      expect(result.productIds).to.have.members(["B125"]);
+    });
+    it("should handle the empty catalogue case", function () {
+      cat = new Catalogue("Test catalogue");
+      const result = cat.checkReorders();
+      expect(result.productIds).to.be.empty;
+     });
   });
 });
