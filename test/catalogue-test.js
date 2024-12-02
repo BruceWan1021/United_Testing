@@ -94,4 +94,21 @@ describe("Catalogue", () => {
       expect(result.productIds).to.be.empty;
      });
   });
+
+  describe("batchAddProducts", () => {
+    beforeEach(function () {
+    batch = {
+      type: "Batch",
+      products: [ p127,p128 ],
+    };
+  });
+    it("should add products for a normar request and return the correct no. added", () => {
+      const result = cat.batchAddProducts(batch);
+      expect(result).to.equal(2);
+      let addedProduct = cat.findProductById("A127");
+      expect(addedProduct).to.not.be.undefined;
+      addedProduct = cat.findProductById("A128");
+      expect(addedProduct).to.not.be.undefined;
+    });
+  });
 });
